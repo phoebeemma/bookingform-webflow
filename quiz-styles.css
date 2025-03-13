@@ -1,0 +1,76 @@
+/* Quiz Styling for Webflow to WordPress */
+
+/* Active state for radio buttons and checkboxes */
+.quiz-active {
+  background-color: rgba(0, 123, 255, 0.1);
+  border-color: #007bff !important;
+}
+
+/* Error state for form validation */
+.input-error {
+  border-color: #dc3545 !important;
+  background-color: rgba(220, 53, 69, 0.05);
+}
+
+/* Disabled button styling */
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.6 !important;
+}
+
+/* Progress bar styling */
+[quiz-attr="progress-bar"] {
+  height: 6px;
+  background-color: #007bff;
+  transition: width 0.3s ease;
+}
+
+[quiz-attr="progress-wrapper"] {
+  background-color: #e9ecef;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+/* Progress steps styling */
+[quiz-attr="step-indicator"] {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  margin: 0 5px;
+  transition: background-color 0.3s ease;
+}
+
+[quiz-attr="step-indicator"].active {
+  background-color: #007bff;
+}
+
+/* Mobile optimization */
+@media (max-width: 767px) {
+  [quiz-attr="progress-circle"] {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  
+  [quiz-attr="step-indicator"] {
+    width: 8px;
+    height: 8px;
+    margin: 0 3px;
+  }
+}
+
+/* Animation for question transitions */
+[quiz-attr="step"] {
+  transition: opacity 0.3s ease;
+}
+
+.current-question {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
