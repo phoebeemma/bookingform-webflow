@@ -32,7 +32,7 @@ function initQuiz() {
 
 // Set up quiz forms
 function setupQuizForms() {
-  const quizForms = document.querySelectorAll('[quiz-attr="form"]');
+  const quizForms = document.querySelectorAll('[data-quiz-form]');
   
   quizForms.forEach((quizForm) => {
     // Turn off native form submission
@@ -41,19 +41,19 @@ function setupQuizForms() {
       e.stopPropagation();
     }, true);
     
-    // Get all question steps
-    const questionSteps = quizForm.querySelectorAll('[quiz-attr="step"]');
+    // Get all question steps (collection items)
+    const questionSteps = quizForm.querySelectorAll('[data-quiz-step]');
     
     // Count actual questions (excluding final step)
     let questionsNumber = 0;
     questionSteps.forEach(step => {
-      if (step.getAttribute('quiz-attr="step"') !== 'final') {
+      if (step.getAttribute('data-quiz-step') !== 'final') {
         questionsNumber++;
       }
     });
     
     // Update total questions display
-    const totalQuestionsElements = quizForm.querySelectorAll('[quiz-attr="total-questions"]');
+    const totalQuestionsElements = quizForm.querySelectorAll('[data-quiz-total]');
     totalQuestionsElements.forEach(element => {
       element.innerHTML = questionsNumber;
     });
@@ -64,8 +64,8 @@ function setupQuizForms() {
     // Hide all questions except the first
     const questionStepsArray = Array.from(questionSteps);
     questionStepsArray.sort((a, b) => {
-      const aStep = parseInt(a.getAttribute('quiz-attr="step"').replace('step-', ''));
-      const bStep = parseInt(b.getAttribute('quiz-attr="step"').replace('step-', ''));
+      const aStep = parseInt(a.getAttribute('data-quiz-step').replace('step-', '')) || 0;
+      const bStep = parseInt(b.getAttribute('data-quiz-step').replace('step-', '')) || 0;
       return aStep - bStep;
     });
     
@@ -82,13 +82,13 @@ function setupQuizForms() {
 
 // Set up form show buttons
 function setupFormShowers() {
-  const formShowers = document.querySelectorAll('[quiz-attr="formshow"]');
+  const formShowers = document.querySelectorAll('[data-quiz-show]');
   
   formShowers.forEach(formShower => {
     if (formShower.tagName !== 'A') return;
     
-    const quizFormName = formShower.getAttribute('quiz-attr="formshow"');
-    const splashScreen = formShower.closest('[quiz-attr="splash"]');
+    const quizFormName = formShower.getAttribute('data-quiz-show');
+    const splashScreen = formShower.closest('[data-quiz-splash]');
     
     formShower.addEventListener('click', function() {
       showForm(quizFormName, splashScreen);
@@ -98,10 +98,10 @@ function setupFormShowers() {
 
 // Show form on button click
 function showForm(formName, splashScreen) {
-  const quizForms = document.querySelectorAll('[quiz-attr="form"]');
+  const quizForms = document.querySelectorAll('[data-quiz-form]');
   
   quizForms.forEach(quizForm => {
-    const quizFormName = quizForm.getAttribute('quiz-attr="formshow"');
+    const quizFormName = quizForm.getAttribute('data-quiz-form-name');
     if (quizFormName === formName) {
       quizForm.style.display = 'block';
       if (splashScreen) splashScreen.style.display = 'none';
@@ -114,9 +114,9 @@ function showForm(formName, splashScreen) {
 
 // Create progress indicator
 function createProgressIndicator(quizForm, totalQuestions) {
-  const progressBar = quizForm.querySelector('[quiz-attr="progress-bar"]');
-  const progressStep = quizForm.querySelector('[quiz-attr="progress-step"]');
-  const progressCircle = quizForm.querySelector('[quiz-attr="progress-circle"]');
+  const progressBar = quizForm.querySelector('[data-quiz-progress-bar]');
+  const progressStep = quizForm.querySelector('[data-quiz-progress-steps]');
+  const progressCircle = quizForm.querySelector('[data-quiz-progress-circle]');
   
   if (progressBar) {
     // Initialize progress bar
@@ -125,7 +125,7 @@ function createProgressIndicator(quizForm, totalQuestions) {
   
   if (progressStep) {
     // Create step indicators
-    const stepTemplate = progressStep.querySelector('[quiz-attr="step-indicator"]');
+    const stepTemplate = progressStep.querySelector('[data-quiz-step-indicator]');
     
     for (let i = 1; i < totalQuestions; i++) {
       const newStep = stepTemplate.cloneNode(true);
@@ -133,14 +133,14 @@ function createProgressIndicator(quizForm, totalQuestions) {
     }
     
     // Mark first step as active
-    const firstStep = progressStep.querySelector('[quiz-attr="step-indicator"]');
+    const firstStep = progressStep.querySelector('[data-quiz-step-indicator]');
     firstStep.classList.add('active');
   }
   
   if (progressCircle) {
     // Initialize circle progress
-    const current = progressCircle.querySelector('[quiz-attr="current-step"]');
-    const total = progressCircle.querySelector('[quiz-attr="total-steps"]');
+    const current = progressCircle.querySelector('[data-quiz-current]');
+    const total = progressCircle.querySelector('[data-quiz-total]');
     
     if (current) current.innerHTML = '1';
     if (total) total.innerHTML = totalQuestions;
@@ -150,17 +150,17 @@ function createProgressIndicator(quizForm, totalQuestions) {
 // Update progress indicator
 function updateProgress(stepNumber, quizForm) {
   if (stepNumber === 'final') {
-    const progressWrapper = quizForm.querySelector('[quiz-attr="progress-wrapper"]');
+    const progressWrapper = quizForm.querySelector('[data-quiz-progress-wrapper]');
     if (progressWrapper) progressWrapper.style.display = 'none';
     return;
   }
   
   const currentStep = parseInt(stepNumber.replace('step-', ''));
-  const questionSteps = quizForm.querySelectorAll('[quiz-attr="step"]');
+  const questionSteps = quizForm.querySelectorAll('[data-quiz-step]');
   
   let totalSteps = 0;
   questionSteps.forEach(step => {
-    if (step.getAttribute('quiz-attr="step"') !== 'final') {
+    if (step.getAttribute('data-quiz-step') !== 'final') {
       totalSteps++;
     }
   });
@@ -168,13 +168,13 @@ function updateProgress(stepNumber, quizForm) {
   const progress = (currentStep / totalSteps) * 100;
   
   // Update progress bar
-  const progressBar = quizForm.querySelector('[quiz-attr="progress-bar"]');
+  const progressBar = quizForm.querySelector('[data-quiz-progress-bar]');
   if (progressBar) {
     progressBar.style.width = progress + '%';
   }
   
   // Update step indicators
-  const stepIndicators = quizForm.querySelectorAll('[quiz-attr="step-indicator"]');
+  const stepIndicators = quizForm.querySelectorAll('[data-quiz-step-indicator]');
   if (stepIndicators.length > 0) {
     for (let i = 0; i < stepIndicators.length; i++) {
       if (i < currentStep) {
@@ -184,9 +184,9 @@ function updateProgress(stepNumber, quizForm) {
   }
   
   // Update circle progress
-  const progressCircle = quizForm.querySelector('[quiz-attr="progress-circle"]');
+  const progressCircle = quizForm.querySelector('[data-quiz-progress-circle]');
   if (progressCircle) {
-    const current = progressCircle.querySelector('[quiz-attr="current-step"]');
+    const current = progressCircle.querySelector('[data-quiz-current]');
     if (current) current.innerHTML = currentStep;
   }
 }
@@ -250,7 +250,7 @@ function setupCustomStyles() {
   });
   
   // Add input validation listeners
-  document.querySelectorAll('[quiz-attr="step"]').forEach(step => {
+  document.querySelectorAll('[data-quiz-step]').forEach(step => {
     step.addEventListener('input', () => {
       const allFieldsFilled = checkRequiredFields(step);
       setNextButtonState(allFieldsFilled, step);
@@ -260,8 +260,8 @@ function setupCustomStyles() {
 
 // Enable/disable next button based on validation
 function setNextButtonState(allFieldsFilled, currentQuestion) {
-  const nextButton = currentQuestion.querySelector('[quiz-attr="next"]');
-  const submitButton = currentQuestion.querySelector('[quiz-attr="submit"]');
+  const nextButton = currentQuestion.querySelector('[data-quiz-next]');
+  const submitButton = currentQuestion.querySelector('[data-quiz-submit]');
   
   if (allFieldsFilled) {
     if (nextButton) {
@@ -295,10 +295,10 @@ function setNextButtonState(allFieldsFilled, currentQuestion) {
 // Setup navigation buttons
 function setupNavigationButtons() {
   // Next buttons
-  const nextButtons = document.querySelectorAll('[quiz-attr="next"]');
+  const nextButtons = document.querySelectorAll('[data-quiz-next]');
   nextButtons.forEach(nextButton => {
     nextButton.addEventListener('click', () => {
-      const quizForm = nextButton.closest('[quiz-attr="form"]');
+      const quizForm = nextButton.closest('[data-quiz-form]');
       const currentQuestion = nextButton.closest('.current-question');
       
       if (!filledState) {
@@ -307,10 +307,10 @@ function setupNavigationButtons() {
       }
       
       // Check if there's a specified destination
-      const destination = nextButton.getAttribute('quiz-attr="destination"');
+      const destination = nextButton.getAttribute('data-quiz-destination');
       
       // Check if there's conditional logic
-      const conditional = nextButton.getAttribute('quiz-attr="conditional"');
+      const conditional = nextButton.getAttribute('data-quiz-conditional');
       
       if (destination) {
         // Direct navigation to specified step
@@ -320,7 +320,7 @@ function setupNavigationButtons() {
         const radioButtons = currentQuestion.querySelectorAll('input[type="radio"]');
         radioButtons.forEach(radio => {
           if (radio.checked) {
-            const radioDestination = radio.getAttribute('quiz-attr="destination"');
+            const radioDestination = radio.getAttribute('data-quiz-destination');
             if (radioDestination) {
               goToQuestion(radioDestination, quizForm, currentQuestion);
             }
@@ -328,12 +328,12 @@ function setupNavigationButtons() {
         });
       } else {
         // Default navigation to next sequential step
-        const currentStep = currentQuestion.getAttribute('quiz-attr="step"');
+        const currentStep = currentQuestion.getAttribute('data-quiz-step');
         const currentStepNumber = parseInt(currentStep.replace('step-', ''));
         const nextStepNumber = currentStepNumber + 1;
         const nextStep = 'step-' + nextStepNumber;
         
-        const nextQuestionElement = quizForm.querySelector(`[quiz-attr="step="${nextStep}"]`);
+        const nextQuestionElement = quizForm.querySelector(`[data-quiz-step="${nextStep}"]`);
         if (nextQuestionElement) {
           goToQuestion(nextStep, quizForm, currentQuestion);
         } else {
@@ -344,10 +344,10 @@ function setupNavigationButtons() {
   });
   
   // Previous buttons
-  const prevButtons = document.querySelectorAll('[quiz-attr="previous"]');
+  const prevButtons = document.querySelectorAll('[data-quiz-previous]');
   prevButtons.forEach(prevButton => {
     prevButton.addEventListener('click', () => {
-      const quizForm = prevButton.closest('[quiz-attr="form"]');
+      const quizForm = prevButton.closest('[data-quiz-form]');
       const currentQuestion = prevButton.closest('.current-question');
       
       // Get the previous step from session storage
@@ -366,14 +366,14 @@ function setupNavigationButtons() {
   });
   
   // Submit buttons
-  const submitButtons = document.querySelectorAll('[quiz-attr="submit"]');
+  const submitButtons = document.querySelectorAll('[data-quiz-submit]');
   submitButtons.forEach(submitButton => {
     submitButton.addEventListener('click', () => {
       if (!filledState) {
         return;
       }
       
-      const quizForm = submitButton.closest('[quiz-attr="form"]');
+      const quizForm = submitButton.closest('[data-quiz-form]');
       const currentQuestion = submitButton.closest('.current-question');
       
       // Calculate final result
@@ -383,7 +383,7 @@ function setupNavigationButtons() {
       goToQuestion('final', quizForm, currentQuestion);
       
       // Handle redirect if specified
-      const redirectUrl = submitButton.getAttribute('quiz-attr="redirect"');
+      const redirectUrl = submitButton.getAttribute('data-quiz-redirect');
       if (redirectUrl) {
         setTimeout(() => {
           window.location.href = redirectUrl;
@@ -393,7 +393,7 @@ function setupNavigationButtons() {
   });
   
   // Start over buttons
-  const startOverButtons = document.querySelectorAll('[quiz-attr="start-over"]');
+  const startOverButtons = document.querySelectorAll('[data-quiz-restart]');
   startOverButtons.forEach(button => {
     button.addEventListener('click', () => {
       // Clear session storage
@@ -437,7 +437,7 @@ function goToQuestion(stepNumber, quizForm, currentQuestion) {
     showResult(quizForm);
   } else {
     // Show next question
-    const nextQuestion = quizForm.querySelector(`[quiz-attr="step="${stepNumber}"]`);
+    const nextQuestion = quizForm.querySelector(`[data-quiz-step="${stepNumber}"]`);
     nextQuestion.classList.add('current-question');
     nextQuestion.style.display = 'block';
     
@@ -452,10 +452,7 @@ function goToQuestion(stepNumber, quizForm, currentQuestion) {
   updateProgress(stepNumber, quizForm);
 }
 
-// Navigate to previous question
-function goToPreviousQuestion(stepNumber, quizForm, currentQuestion) {
-  // Hide current question
-  currentQuestion.classList.remove('current-question');
+
   currentQuestion.style.display = 'none';
   
   // Show previous question
@@ -508,7 +505,7 @@ function updateQuestionNumber(question, stepNumber) {
   if (stepNumber === 'final') return;
   
   const currentNumber = parseInt(stepNumber.replace('step-', ''));
-  const questionNumberDisplay = question.querySelector('[quiz-attr="current-question"]');
+  const questionNumberDisplay = question.querySelector('[data-quiz-current]');
   
   if (questionNumberDisplay) {
     questionNumberDisplay.innerHTML = currentNumber;
@@ -517,11 +514,11 @@ function updateQuestionNumber(question, stepNumber) {
 
 // Save weights from answers
 function saveWeights(currentQuestion) {
-  const weightedInputs = currentQuestion.querySelectorAll('[quiz-attr="weight"]');
+  const weightedInputs = currentQuestion.querySelectorAll('[data-quiz-weight]');
   
   weightedInputs.forEach(input => {
     if ((input.type === 'radio' || input.type === 'checkbox') && input.checked) {
-      const weights = input.getAttribute('quiz-attr="weight"').split(',');
+      const weights = input.getAttribute('data-quiz-weight').split(',');
       
       weights.forEach(weightPair => {
         const [result, value] = weightPair.split(':');
@@ -558,19 +555,34 @@ function showResult(quizForm) {
   const result = sessionStorage.getItem('quiz-result') || calculateResult();
   console.log('Showing result:', result);
   
-  // Hide all result screens first
-  const allResultScreens = quizForm.querySelectorAll('[quiz-attr="result"]');
+  // Find the results container 
+  const resultsContainer = quizForm.querySelector('[data-quiz-results]');
+  if (!resultsContainer) return;
+  
+  // Show the results container
+  resultsContainer.style.display = 'block';
+  
+  // Hide all individual result screens first
+  const allResultScreens = resultsContainer.querySelectorAll('[data-quiz-result]');
   allResultScreens.forEach(screen => {
     screen.style.display = 'none';
   });
   
   // Show the matching result screen
-  const resultScreen = quizForm.querySelector(`[quiz-attr="result=${result}"]`);
+  const resultScreen = resultsContainer.querySelector(`[data-quiz-result="${result}"]`);
   if (resultScreen) {
     resultScreen.style.display = 'block';
+    
+    // Check if there's a redirect URL in the result
+    const redirectUrl = resultScreen.getAttribute('data-quiz-redirect');
+    if (redirectUrl) {
+      setTimeout(() => {
+        window.location.href = redirectUrl;
+      }, 500);
+    }
   } else {
     // If no specific result screen, show default
-    const defaultResult = quizForm.querySelector('[quiz-attr="result=default"]');
+    const defaultResult = resultsContainer.querySelector('[data-quiz-result="default"]');
     if (defaultResult) {
       defaultResult.style.display = 'block';
     }
