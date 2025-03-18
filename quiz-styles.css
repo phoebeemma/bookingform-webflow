@@ -19,13 +19,13 @@
 }
 
 /* Progress bar styling */
-[quiz-attr="progress-bar"] {
+[data-quiz-progress-bar] {
   height: 6px;
   background-color: #007bff;
   transition: width 0.3s ease;
 }
 
-[quiz-attr="progress-wrapper"] {
+[data-quiz-progress-wrapper] {
   background-color: #e9ecef;
   height: 6px;
   border-radius: 3px;
@@ -34,7 +34,7 @@
 }
 
 /* Progress steps styling */
-[quiz-attr="step-indicator"] {
+[data-quiz-step-indicator] {
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -43,26 +43,116 @@
   transition: background-color 0.3s ease;
 }
 
-[quiz-attr="step-indicator"].active {
+[data-quiz-step-indicator].active {
   background-color: #007bff;
 }
 
 /* Mobile optimization */
+@media (1000px;
+  padding: 20px;
+}
+
+/* Ensuring form elements stack properly on mobile */
 @media (max-width: 767px) {
-  [quiz-attr="progress-circle"] {
+  .button-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  button[data-quiz-next],
+  button[data-quiz-previous],
+  button[data-quiz-submit],
+  button[data-quiz-restart] {
+    width: 100%;
+    margin: 5px 0;
+  }
+}
+
+/* Result card styling */
+.result-content {
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+  margin-bottom: 20px;
+}
+
+.result-button {
+  display: inline-block;
+  background-color: #28a745;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-right: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.result-button:hover {
+  background-color: #218838;
+  color: white;
+}
+
+/* Splash screen styling */
+[data-quiz-splash] {
+  text-align: center;
+  padding: 40px 20px;
+  margin-bottom: 30px;
+}
+
+[data-quiz-splash] h2 {
+  margin-bottom: 20px;
+}
+
+[data-quiz-splash] .start-button {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+[data-quiz-splash] .start-button:hover {
+  background-color: #0056b3;
+  color: white;
+}767px) {
+  [data-quiz-progress-circle] {
     width: 60px !important;
     height: 60px !important;
   }
   
-  [quiz-attr="step-indicator"] {
+  [data-quiz-step-indicator] {
     width: 8px;
     height: 8px;
     margin: 0 3px;
   }
+  
+  /* Larger touch targets on mobile */
+  .option {
+    padding: 12px 8px;
+    margin-bottom: 10px;
+  }
+  
+  /* Adjust button sizes for mobile */
+  button[data-quiz-next],
+  button[data-quiz-previous],
+  button[data-quiz-submit],
+  button[data-quiz-restart] {
+    padding: 12px 16px;
+    min-width: 120px;
+  }
+  
+  /* Better spacing for mobile forms */
+  .question-content {
+    padding: 15px 10px;
+  }
 }
 
 /* Animation for question transitions */
-[quiz-attr="step"] {
+[data-quiz-step] {
   transition: opacity 0.3s ease;
 }
 
@@ -74,3 +164,118 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* Results styling */
+[data-quiz-results] {
+  display: none;
+}
+
+[data-quiz-result] {
+  display: none;
+}
+
+/* Form and input styling */
+[data-quiz-form] {
+  position: relative;
+}
+
+/* Style for option labels (radio or checkbox containers) */
+.option {
+  display: block;
+  position: relative;
+  padding: 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  transition: all 0.2s ease;
+}
+
+.option:hover {
+  border-color: #aaa;
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Hidden original radio/checkbox but keep it accessible */
+.option input[type="radio"],
+.option input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Custom radio/checkbox styling */
+.option .option-text {
+  padding-left: 30px;
+  position: relative;
+}
+
+.option .option-text:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-radius: 3px;
+  background-color: #fff;
+}
+
+.option input[type="radio"] + .option-text:before {
+  border-radius: 50%;
+}
+
+.option input[type="radio"]:checked + .option-text:before,
+.option input[type="checkbox"]:checked + .option-text:before {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+/* Button styling */
+button[data-quiz-next],
+button[data-quiz-previous],
+button[data-quiz-submit],
+button[data-quiz-restart] {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin: 0 5px;
+}
+
+button[data-quiz-next]:hover,
+button[data-quiz-previous]:hover,
+button[data-quiz-submit]:hover,
+button[data-quiz-restart]:hover {
+  background-color: #0056b3;
+}
+
+button[data-quiz-previous] {
+  background-color: #6c757d;
+}
+
+button[data-quiz-previous]:hover {
+  background-color: #5a6268;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Hiding steps initially */
+[data-quiz-step] {
+  display: none;
+}
+
+/* WordPress-specific fixes */
+.wp-block-custom-quiz {
+  margin: 0 auto;
+  max-width:
